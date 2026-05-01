@@ -1,0 +1,67 @@
+name: Build and Deploy Typst
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Typst
+        uses: typst-community/setup-typst@v3
+
+      - name: Build PDF and HTML wrapper
+        run: |
+          mkdir -p output
+
+          # Compile Typst → PDF
+          typst compile src/main.typ output/index.pdf
+
+          # Generate HTML wrapper
+          cat > output/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <title>Advanced Databases</title>
+            <style>
+              html, body { margin: 0; height: 100%; }
+              iframe { border: none; width: 100%; height: 100%; }
+            </style>
+          </head>
+          <body>
+            <iframe src="index.pdf"></iframe>
+            <p style="position:fixed;bottom:10px;left:10px;background:white;padding:4px;">
+              If the PDF doesn't load, <a href="index.pdf">download it</a>.
+            </p>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: output/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
