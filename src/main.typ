@@ -27,5 +27,5 @@
 #part("DBMS Internals")
 
 #include "chapters/01_buffer_manager.typ"
-
 #include "chapters/02_data_organization.typ"
+#include "chapters/03_hash_organization.typ"
