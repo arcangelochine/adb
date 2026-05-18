@@ -4,14 +4,14 @@
 
 #show: bookly.with(
   title: "Advanced Databases",
-  author: "AC",
+  author: "",
   lang: "en",
   theme: orly,
   colors: (
     primary: rgb(55, 122, 170),
   ),
   title-page: book-title-page(
-    series: emph("Notes"),
+    series: emph("講義ノート"),
     subtitle: none,
     institution: none,
     edition: "Draft",
@@ -28,3 +28,4 @@
 
 #include "chapters/01_buffer_manager.typ"
 
+#include "chapters/02_data_organization.typ"
