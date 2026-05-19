@@ -122,17 +122,17 @@
 
   When the index is _clustered_ and RID lists are sorted, all records sharing the same key value reside on the same contiguous region of the data file. The number of data pages that must be read for each key value is therefore at most
 
-  $ C_D = ceil(N_"PAG" (R) / N_"KEY") $
+  $ C_D = ceil((N_"PAG" (R)) / N_"KEY") $
 
   that is, the total number of data pages divided evenly among the distinct key values. The total data access cost is then the product of the number of qualifying key values and the pages per key value, which simplifies to $s_f times N_"PAG"$—the same formula as for a primary B+-tree.
 
-  When the index is _unclustered_ with sorted RID lists, records with the same key value are scattered across the data file. The number of pages that must be read to retrieve all records for one key value is estimated by the Cardenas formula applied to $N_"REC" (R) / N_"KEY"$ records distributed across $N_"PAG" (R)$ pages:
+  When the index is _unclustered_ with sorted RID lists, records with the same key value are scattered across the data file. The number of pages that must be read to retrieve all records for one key value is estimated by the Cardenas formula applied to $(N_"REC" )(R) / N_"KEY"$ records distributed across $N_"PAG" (R)$ pages:
 
-  $ C_D = ceil(Phi(N_"REC" (R) / N_"KEY", N_"PAG" (R))) $
+  $ C_D = ceil(Phi((N_"REC" (R)) / N_"KEY", N_"PAG" (R))) $
 
   where $Phi(k, n) = n (1 - (1 - 1/n)^k)$ is the expected number of distinct pages hit when drawing $k$ records uniformly at random from a file of $n$ pages. Because the RID list is sorted, each page is read at most once even if it contains multiple qualifying records.
 
-  When the index is unclustered with _unsorted_ RID lists, there is no such guarantee, and in the worst case each qualifying record requires a separate page read. The data access cost per key value becomes simply $C_D = ceil(N_"REC" (R) / N_"KEY")$, and the total cost grows linearly with the number of qualifying records.
+  When the index is unclustered with _unsorted_ RID lists, there is no such guarantee, and in the worst case each qualifying record requires a separate page read. The data access cost per key value becomes simply $C_D = ceil((N_"REC" (R)) / N_"KEY")$, and the total cost grows linearly with the number of qualifying records.
 
   #info-box()[
     === Range Query Cost Summary
