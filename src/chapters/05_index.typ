@@ -6,7 +6,7 @@
 
 #chapter(title: "Indexes", abstract: abs, toc: true)[
 
-  == Primary vs. Secondary Organization: A Critical Distinction
+  == Primary and Secondary Indexes
 
   A recurring source of confusion is the conflation of two very different uses of a B+-tree: as a _primary_ organization, where the data file itself is the B+-tree leaf level, versus as a _secondary_ organization, where the B+-tree is an index structure sitting beside a separately organized data file. The distinction matters enormously for query cost.
 
@@ -20,7 +20,7 @@
 
   Given this tension, a natural question arises: which primary organization should be chosen when queries span multiple attributes with no single dominant access pattern? The answer, in the vast majority of practical systems, is the heap file augmented with secondary indexes. The reasoning is straightforward. A primary B+-tree organization optimizes equality and range queries on one attribute but makes table scans more expensive, because the leaf file carries the overhead of 75-83% occupancy (hence pages contain 17-25% garbage). A heap file optimizes table scans—it is the most compact possible organization—but provides no fast access on any attribute. By pairing a heap file with one or more secondary indexes, a system gains _optimal table scan performance_ on any attribute alongside fast equality search on indexed attributes, at a cost of 2 I/Os rather than 1: one for the index leaf and one for the data page. This modest increase from one to two I/Os for equality search is almost always an acceptable trade-off given the gains in flexibility, which is why heap-plus-index is the default design in virtually every relational database system.
 
-  == Indexes as Secondary Organizational Structures
+  == Secondary Index Structures
 
   === Definition and Purpose
 
@@ -80,7 +80,7 @@
 
   For an equality predicate on the indexed attribute the selectivity factor is $s_f = 1 / N_"KEY"$, and the expected number of matching records is $E_"REC" = N_"REC" / N_"KEY"$. The cost of reaching the correct entry in the index is one leaf page, assuming the upper levels are in memory. What happens next depends on whether the index is clustered and whether the RID list is sorted. In the clustered case, all matching records are physically adjacent, so the data access cost is $s_f times N_"PAG"$ pages—optimal. In the unclustered case with an unsorted RID list, each matching record may reside on a distinct page, giving a worst-case data access cost of $s_f times N_"REC"$ page reads. The practically important intermediate case is an unclustered index whose RID lists are kept sorted: because the identifiers are ordered, the system never fetches the same page twice, and the actual cost is the number of distinct pages containing at least one matching record. This quantity is estimated by the Cardenas formula introduced in the following section.
 
-  == Estimating Page Accesses for Range Queries
+  == Range Query Cost Estimation
 
   === The Cardenas Formula
 
@@ -100,7 +100,7 @@
     Cardenas formula and its upper bound $min(k, n)$ for $n = 1000$ pages.
   ])
 
-  == The Range Query Cost Model for Non-Unique Indexes
+  == Non-Unique Index Cost Models
 
   The discussion of indexes in the previous chapter established the basic two-component cost model $C = C_I + C_D$, where $C_I$ is the cost of traversing the index itself and $C_D$ is the cost of fetching the matching records from the data file. For equality predicates on unique attributes this decomposition is trivial: at most one record matches, so both components are one page access each. The interesting and practically important case is range search on a non-unique attribute, where the number of matching records can be large and the interaction between the index structure and the data layout determines the cost.
 
@@ -150,7 +150,7 @@
     $
   ]
 
-  == Conjunctive Queries and the Limits of Single-Attribute Indexes
+  == Conjunctive Queries
 
   A conjunctive query imposes conditions on two or more attributes simultaneously, for example retrieving all employees whose age is between 30 and 40 and whose salary exceeds 50,000. When separate indexes exist on each attribute, a natural approach is to use them in combination. The most selective index is consulted first: its RID list is loaded into main memory, sorted, and then used as a filter against which the second index's RID list is intersected. Only the RIDs that survive the intersection are then used to fetch actual records from the data file.
 
@@ -218,7 +218,7 @@
 
   The practical implication is that the choice between a bitmap index and an inverted list is not a choice about stored data but about the in-memory representation used at query time. When many conditions must be combined, decompressing the relevant entries into full bit vectors and applying bitwise operations is often faster than merging sorted RID lists. When the conditions are few and highly selective, working directly with RID lists avoids the overhead of constructing full bit vectors. A well-engineered system may support both representations and choose between them based on the query.
 
-  == Multi-Dimensional Data and the Failure of Standard Indexes
+  == Multi-Dimensional Indexing
 
   All indexes discussed so far impose a total linear order on the indexed attribute values. For a single numerical or string attribute this is entirely natural. For two-dimensional spatial data—latitude and longitude, or any pair of Cartesian coordinates—a linear order is an imperfect fit, and the standard approaches fail in ways that are worth understanding precisely.
 
@@ -286,7 +286,7 @@
 
   Deletion is symmetric: the record is located by its path, removed from the leaf, and if the leaf becomes too sparse it may be merged with its sibling, coarsening the partition. In both cases, the operations are entirely local, involving only a bounded number of pages, exactly as in a standard B+-tree.
 
-  == Choosing Among the Right Approach
+  == Index Selection Strategies
 
   The three approaches to conjunctive queries—separate single-attribute indexes with RID-list intersection, multi-attribute combined indexes, and spatial indexes such as the G-tree—are not interchangeable. Each is suited to a different query shape.
 
