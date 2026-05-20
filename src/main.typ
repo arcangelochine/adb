@@ -31,3 +31,4 @@
 #include "chapters/03_hash_organization.typ"
 #include "chapters/04_tree_organization.typ"
 #include "chapters/05_index.typ"
+#include "chapters/06_access_method.typ"
