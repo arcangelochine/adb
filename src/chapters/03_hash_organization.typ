@@ -2,14 +2,14 @@
 
 #let abs = [
   When the workload consists overwhelmingly of single-key lookups, hash-based
-  primary organization offers the promise of constant-time access—one page read
-  in the ideal case. This chapter explores both static and dynamic hash
+  primary organization offers the promise of constant-time access---one page
+  read in the ideal case. This chapter explores both static and dynamic hash
   techniques. We begin by analysing classic static hashing: the choice of
   loading factor, the probabilistic relationship between page size and overflow,
   and the principles of hash-function design. The central cost of static hashing
   is the eventual need for full-file reorganization, and we develop a design
-  principle that recurs throughout all of database engineering—pay per page, not
-  per record—together with the sorting trick that makes reorganization
+  principle that recurs throughout all of database engineering---pay per page,
+  not per record---together with the sorting trick that makes reorganization
   tractable. The second half of the chapter surveys the major families of
   dynamic hashing: virtual, extendable, linear, and spiral. Each is evaluated
   honestly for its density and distribution properties, and the conclusion is
@@ -56,7 +56,7 @@
   the cost of table scans. If it is too high, overflow becomes frequent,
   degrading access performance. Neither extreme is acceptable, and the right
   choice depends on the interplay between page capacity and the statistical
-  properties of the hash function—a relationship that turns out to be subtler
+  properties of the hash function---a relationship that turns out to be subtler
   than it first appears.
 
   === Page Size and the Probability of Overflow
@@ -66,12 +66,12 @@
   significant overflow. Consider a page with capacity for only three records,
   filled to two. The loading factor is already 67%, and a single additional
   collision causes overflow. The probability of that collision occurring is not
-  negligible. But when pages are large—with capacity for 200 or 300 records—the
-  same 90% loading factor produces a very different picture. Arriving at 400
-  records in a page that holds 300 is a far more improbable event than arriving
-  at four records in a page that holds three. The variance of the occupancy
-  distribution shrinks as the page grows larger, because each additional record
-  is spread across a much wider probability space.
+  negligible. But when pages are large---with capacity for 200 or 300
+  records---the same 90% loading factor produces a very different picture.
+  Arriving at 400 records in a page that holds 300 is a far more improbable
+  event than arriving at four records in a page that holds three. The variance
+  of the occupancy distribution shrinks as the page grows larger, because each
+  additional record is spread across a much wider probability space.
 
   // FIGURE SUGGESTION:
   // This is precisely the graph the professor describes: overflow probability on the
@@ -92,8 +92,8 @@
 
   The hash function transforms a key into a page number in the range $[0, M-1]$.
   The typical construction applies a general-purpose transformation to the
-  key—extracting bits from different parts of the string or integer and
-  combining them through multiplication—and then takes the result modulo $M$.
+  key---extracting bits from different parts of the string or integer and
+  combining them through multiplication---and then takes the result modulo $M$.
   The requirement is that the function distribute records as uniformly as
   possible across pages, because any systematic bias concentrates records and
   drives up overflow in certain pages.
@@ -120,7 +120,7 @@
 
   The cost model is straightforward. With a 10% overflow probability, 90% of
   equality searches read one page and 10% read two. The average cost is
-  therefore approximately 1.1 page accesses—effectively constant. Even in the
+  therefore approximately 1.1 page accesses---effectively constant. Even in the
   worst case, when a single key is so common that it fills three or four pages
   (imagine an extremely frequent family name in a table of people), the cost to
   retrieve all matching records is proportional to the number of pages those
@@ -130,13 +130,13 @@
 
   Despite its excellence for equality search, hash organization is entirely
   unsuitable for range queries. The mechanism that achieves constant-time point
-  access—distributing logically adjacent keys to unrelated pages—simultaneously
-  destroys any spatial locality. Records with keys 100.001 and 100.002, which
-  are adjacent in value, may reside on pages 47 and 831 respectively. A query
-  requesting all records with key between 100 and 101 must therefore perform a
-  full table scan, reading every page in the file. There is no alternative: the
-  hash function provides no information about where records with nearby keys are
-  stored.
+  access---distributing logically adjacent keys to unrelated
+  pages---simultaneously destroys any spatial locality. Records with keys
+  100.001 and 100.002, which are adjacent in value, may reside on pages 47 and
+  831 respectively. A query requesting all records with key between 100 and 101
+  must therefore perform a full table scan, reading every page in the file.
+  There is no alternative: the hash function provides no information about where
+  records with nearby keys are stored.
 
   This limitation is not a deficiency in any particular design but an inherent
   consequence of the hash principle. Any function that achieves uniform
@@ -161,10 +161,10 @@
   The scan of the old file is linear in $N_"PAG"$ and is unproblematic. The
   problem is with writing the new file. Records destined for the same output
   page arrive throughout the input scan, interleaved with records for every
-  other page. If the output file does not fit in memory—the typical case—each
-  output page must be loaded from disk, updated, and flushed back for every
-  record that hashes to it. If a page holds $C$ records, it is loaded and
-  flushed $C$ times: the write cost is $O(N_"REC")$, not $O(N_"PAG")$. For a
+  other page. If the output file does not fit in memory---the typical
+  case---each output page must be loaded from disk, updated, and flushed back
+  for every record that hashes to it. If a page holds $C$ records, it is loaded
+  and flushed $C$ times: the write cost is $O(N_"REC")$, not $O(N_"PAG")$. For a
   page capacity of 100, this is a hundredfold penalty.
 
   The principle at stake is worth stating explicitly: in disk-based systems, the
@@ -195,7 +195,7 @@
   is $2 times N_"PAG"$ I/Os (one read, one write).
 
   The total is $8 times N_"PAG"$ I/Os, compared to $O(N_"REC"$) for the naive
-  approach—a factor of $C$ improvement for a page capacity of $C$.
+  approach---a factor of $C$ improvement for a page capacity of $C$.
 
   // FIGURE SUGGESTION:
   // A three-row pipeline diagram illustrating the three phases would clarify this well:
@@ -215,8 +215,8 @@
   can be eliminated and replaced by a direct pipeline.
 
   Consider the third phase. The sorted temporary file is read sequentially and
-  the output pages are written sequentially. The consumer—the code that writes
-  the new hash file—is perfectly happy to receive records one at a time in
+  the output pages are written sequentially. The consumer---the code that writes
+  the new hash file---is perfectly happy to receive records one at a time in
   sorted order rather than reading them from disk. The final write of the
   temporary file in phase two and the read in phase three can be fused: merge
   sort, which produces records in order, streams its output directly into the
@@ -226,7 +226,7 @@
   The same logic applies between phases one and two. The first phase reads
   records in arbitrary order, decorates them with their hash address, and passes
   them on. The sorting algorithm is equally happy to receive records as a stream
-  rather than from a file—it does not care about the order of its input, only
+  rather than from a file---it does not care about the order of its input, only
   the order of its output. The write in phase one and the read in phase two can
   be fused, saving another $2 times N_"PAG"$ I/Os.
 
@@ -280,14 +280,14 @@
   and computes the hash modulo the corresponding size. If the bitmap shows the
   resulting page as allocated, the search proceeds to disk. If not, the exponent
   is decremented and the computation repeated. Because this traversal happens
-  entirely in main memory—the bitmap is small and cached—its cost is zero in
+  entirely in main memory---the bitmap is small and cached---its cost is zero in
   terms of disk I/Os, even when several iterations are needed.
 
   Virtual hash has two serious problems. The first concerns density. Every page
   begins its life at 50% occupancy immediately after a split, then fills to 100%
   before splitting again. The average occupancy over this cycle is 75%, which is
   disappointing. The very property that makes virtual hash appealing at first
-  glance—zero overflow—is what causes this problem. Without any overflow
+  glance---zero overflow---is what causes this problem. Without any overflow
   tolerated, pages must be split the instant they reach 100%, the post-split
   occupancy to 50%.
 
@@ -299,7 +299,7 @@
   equality search.
 
   #info-box([
-    Virtual hashing eliminates overflow entirely—and this turns out to be its
+    Virtual hashing eliminates overflow entirely---and this turns out to be its
     greatest weakness. Because every page is split the instant it reaches
     capacity, each page spends exactly half its life between 50% and 100% full,
     giving an average occupancy of 75%. Tolerating a small amount of overflow
@@ -319,10 +319,10 @@
 
   The structural difference from virtual hash is modest: the directory occupies
   somewhat more space than a compressed bitmap, but it makes the lookup
-  marginally simpler. The fundamental properties—average density of 75%, need to
-  keep the directory in main memory, zero overflow—are identical. Extendable
-  hash is best understood as an engineering variant of virtual hash rather than
-  a conceptually distinct approach.
+  marginally simpler. The fundamental properties---average density of 75%, need
+  to keep the directory in main memory, zero overflow---are identical.
+  Extendable hash is best understood as an engineering variant of virtual hash
+  rather than a conceptually distinct approach.
 
   === Linear Hash
 
@@ -333,7 +333,7 @@
   $P$ has not.
 
   When an overflow occurs anywhere in the file, the response is to split the
-  page at $P$ and advance the pointer—regardless of which page actually
+  page at $P$ and advance the pointer---regardless of which page actually
   overflowed. This decoupling of the overflow trigger from the split location
   eliminates the need for any directory or bitmap; the single pointer $P$ is the
   only auxiliary structure required.
@@ -347,10 +347,10 @@
 
   The more important advantage of linear hash is that it gives the designer
   direct control over the target density. Rather than being forced to split
-  every page that reaches 100%, the designer can choose any threshold—say
-  90%—and split whenever the global density exceeds it. This allows the average
-  loading factor to be set explicitly, trading off between overflow probability
-  and table scan cost.
+  every page that reaches 100%, the designer can choose any threshold---say
+  90%---and split whenever the global density exceeds it. This allows the
+  average loading factor to be set explicitly, trading off between overflow
+  probability and table scan cost.
 
   Linear hash has its own distribution problem, however. At any moment, the file
   contains two populations of pages: those that have been split in the current
@@ -372,11 +372,11 @@
   its expected load under the exponential function.
 
   The consequence is that roughly half the pages at any time sit within a
-  reasonable range of the target density—neither dangerously full nor wastefully
-  empty. The remaining half are concentrated at the two extremes, but the
-  extremes are at least predictable and bounded. Compared to linear hash, where
-  every page is at one of two bad extremes, spiral hash achieves a meaningfully
-  better distribution.
+  reasonable range of the target density---neither dangerously full nor
+  wastefully empty. The remaining half are concentrated at the two extremes, but
+  the extremes are at least predictable and bounded. Compared to linear hash,
+  where every page is at one of two bad extremes, spiral hash achieves a
+  meaningfully better distribution.
 
   Despite this improvement, spiral hash is not a complete solution. Even in the
   best case, the densest page in the file is approximately twice as full as the

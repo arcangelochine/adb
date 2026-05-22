@@ -10,12 +10,13 @@
   are used in practice. For each algorithm the chapter establishes its cost, its
   memory requirements, the conditions under which it applies, and the ordering
   properties of its output. It then examines how each algorithm adapts to outer
-  joins and full outer joins, and closes with the set operators—union,
-  intersect, and except—which reduce to variants of join and can be implemented
-  by the same algorithms. Throughout, the guiding principle is the same one that
-  governs all disk-based computation: the unit of cost is the page, and any
-  algorithm whose cost grows with the number of records rather than the number
-  of pages should be avoided whenever the data is not highly filtered.
+  joins and full outer joins, and closes with the set operators---union,
+  intersect, and except---which reduce to variants of join and can be
+  implemented by the same algorithms. Throughout, the guiding principle is the
+  same one that governs all disk-based computation: the unit of cost is the
+  page, and any algorithm whose cost grows with the number of records rather
+  than the number of pages should be avoided whenever the data is not highly
+  filtered.
 ]
 
 #chapter(title: "Physical Operators II", abstract: abs, toc: true)[
@@ -29,7 +30,7 @@
   $ C(O_E, O_I) = C(O_E) + E_"REC" (O_E) times C(O_I) $
 
   where $O_E$ is the outer operator and $O_I$ is the inner operator. If both are
-  table scans, this is $N_"PAG" (R) + N_"REC" (R) times N_"PAG" (S)$—quadratic
+  table scans, this is $N_"PAG" (R) + N_"REC" (R) times N_"PAG" (S)$---quadratic
   in the number of records. This cost is unacceptable for any table of
   non-trivial size and the nested loop is never used in practice. It serves only
   as a theoretical baseline and as the only algorithm capable of handling
@@ -38,7 +39,7 @@
   The `PageNestedLoop` improves on the nested loop by loading one page of the
   outer relation at a time rather than one record. For every page of the outer,
   the entire inner is scanned. The cost becomes
-  $N_"PAG" (R) + N_"PAG" (R) times N_"PAG" (S)$—still quadratic in pages but a
+  $N_"PAG" (R) + N_"PAG" (R) times N_"PAG" (S)$---still quadratic in pages but a
   factor of $B_"records/page"$ better than the basic nested loop. Still
   unacceptable in general.
 
@@ -46,9 +47,9 @@
   relation at a time. For every block of $B$ outer pages, the entire inner is
   scanned once. The cost becomes
   $N_"PAG" (R) + ceil((N_"PAG" (R)) / B) times N_"PAG" (S)$. When the outer
-  relation fits entirely in memory—that is, $N_"PAG" (R) <= B$—this collapses to
-  the optimal $N_"PAG" (R) + N_"PAG" (S)$: load the outer once, stream the inner
-  once.
+  relation fits entirely in memory---that is, $N_"PAG" (R) <= B$---this
+  collapses to the optimal $N_"PAG" (R) + N_"PAG" (S)$: load the outer once,
+  stream the inner once.
 
   This special case of `BlockNestedLoop` is the right choice whenever one of the
   two relations is small enough to fit in memory. In that case the cost is
@@ -56,14 +57,14 @@
   must be the smaller one; the inner relation may be arbitrarily large, because
   it is streamed one page at a time.
 
-  None of the nested loop variants—except the special case where one table fits
-  in memory—are used in practice. They are presented here to establish the
-  baseline against which realistic algorithms are measured.
+  None of the nested loop variants---except the special case where one table
+  fits in memory---are used in practice. They are presented here to establish
+  the baseline against which realistic algorithms are measured.
 
   == Index Nested Loop
 
   The `IndexNestedLoop` is the algorithm of choice when the outer relation is
-  small— either because the table itself is small, or because a selective
+  small--- either because the table itself is small, or because a selective
   predicate has been applied upstream that reduces the number of records flowing
   into the join. For every record arriving from the outer operator, the
   algorithm uses an index on the inner relation's join attribute to retrieve
@@ -80,8 +81,8 @@
   grows but remains a small constant for reasonable fan-outs.
 
   The critical factor is $E_"REC" (O_E)$: the expected number of records
-  produced by the outer operator. When this is large—approaching
-  $N_"REC" (R)$—the cost is $O(N_"REC" times (C_I + C_D))$, which is far worse
+  produced by the outer operator. When this is large---approaching
+  $N_"REC" (R)$---the cost is $O(N_"REC" times (C_I + C_D))$, which is far worse
   than a merge join or hash join whose cost is $O(N_"PAG")$. Index nested loop
   is therefore appropriate only when the outer relation is genuinely small: when
   a highly selective predicate has been applied upstream, when the outer table
@@ -164,15 +165,16 @@
   block. The inner relation is then scanned until the join attribute exceeds
   $v$, and for each inner record with value $v$, it is joined with every record
   in the memory block. This requires that all outer records with any given join
-  attribute value fit in memory—a condition that holds whenever the join
+  attribute value fit in memory---a condition that holds whenever the join
   attribute is reasonably selective in the outer relation.
 
   The incremental cost of the merge join operator itself is zero: it consumes
   its inputs through the iterator interface and produces output through the same
   interface, with no intermediate disk writes. The total cost is therefore the
-  cost of producing the two sorted inputs. If both inputs arrive pre-sorted—from
-  indexes, from earlier sorts, or from upstream operations—the merge join is
-  entirely free. If sorting is required, the cost of each sort is added:
+  cost of producing the two sorted inputs. If both inputs arrive
+  pre-sorted---from indexes, from earlier sorts, or from upstream
+  operations---the merge join is entirely free. If sorting is required, the cost
+  of each sort is added:
 
   $ C(O_E, O_I) = C(O_E) + C(O_I) + C_"sort" (O_E) + C_"sort" (O_I) $
 
@@ -184,9 +186,9 @@
   The output of a `MergeJoin` is sorted on the join attribute. This is a
   valuable property: a subsequent `GroupBy` on the join attribute, or a
   subsequent `MergeJoin` on the same attribute, requires no additional sort.
-  When a query chains two merge joins on the same attribute—for example, joining
-  $R$, $S$, and $T$ all on attribute $A$—the output of the first merge join is
-  already sorted on $A$ and can feed directly into the second without
+  When a query chains two merge joins on the same attribute---for example,
+  joining $R$, $S$, and $T$ all on attribute $A$---the output of the first merge
+  join is already sorted on $A$ and can feed directly into the second without
   re-sorting. This sort-preservation is a significant advantage of merge join
   over hash join, which produces unsorted output.
 
@@ -199,9 +201,9 @@
   then computed partition by partition, with each partition of the smaller
   relation loaded entirely into memory.
 
-  The algorithm assumes that at least one of the two relations—call it $R$, the
-  smaller—satisfies $N_"PAG" (R) <= B^2$, where $B$ is the available buffer
-  space. When this holds, a single partitioning phase suffices.
+  The algorithm assumes that at least one of the two relations---call it $R$,
+  the smaller---satisfies $N_"PAG" (R) <= B^2$, where $B$ is the available
+  buffer space. When this holds, a single partitioning phase suffices.
 
   In the _partitioning phase_, the operator applies a hash function $h_1$ on the
   join attribute to both $R$ and $S$, distributing records into $B$ partitions
@@ -236,8 +238,8 @@
   three-phase sort of $S$, costing $2 N_"PAG" (R) + 4 N_"PAG" (S)$. Hash join
   requires only two phases (one to reduce $R$ to partitions of size $B$,
   regardless of $S$'s size), costing $2 times (N_"PAG" (R) +
-    N_"PAG" (S))$—potentially much cheaper. When both relations are in the same
-  size class, the costs are equal.
+    N_"PAG" (S))$---potentially much cheaper. When both relations are in the
+  same size class, the costs are equal.
 
   #info-box()[
     === Choosing Between Index Nested Loop, Merge Join, and Hash Join
@@ -245,13 +247,13 @@
     The choice among the three practical join algorithms reduces to a single
     question: how many records does the outer operator produce?
 
-    When $E_"REC" (O_E)$ is small—because a highly selective predicate has been
-    applied upstream—index nested loop is best. Its cost scales with the number
-    of outer records, and each index lookup costs only a few I/Os.
+    When $E_"REC" (O_E)$ is small---because a highly selective predicate has
+    been applied upstream---index nested loop is best. Its cost scales with the
+    number of outer records, and each index lookup costs only a few I/Os.
 
-    When $E_"REC" (O_E)$ is large—approaching the full table size—merge join or
-    hash join is best. Their costs scale with the number of pages, not records,
-    and are therefore one to two orders of magnitude cheaper for large
+    When $E_"REC" (O_E)$ is large---approaching the full table size---merge join
+    or hash join is best. Their costs scale with the number of pages, not
+    records, and are therefore one to two orders of magnitude cheaper for large
     unrestricted tables.
 
     Between merge join and hash join, prefer merge join when the output needs to
@@ -262,7 +264,7 @@
     spans hash-phase boundaries.
 
     The cost of projecting before sorting or hashing deserves emphasis. The cost
-    of sort and hash join is proportional to $N_"PAG" (O)$—the pages of the
+    of sort and hash join is proportional to $N_"PAG" (O)$---the pages of the
     operator's input, not the pages of the raw table. A projection that reduces
     the record from 20 attributes to 2 reduces the page count by roughly a
     factor of 10, and the sort or hash cost falls by the same factor. Always
@@ -273,9 +275,9 @@
 
   Hash join produces unsorted output. Records are emitted in partition order,
   which corresponds to no meaningful attribute order. If a subsequent operator
-  requires sorted input—a GroupBy, a merge join, or a user-requested ORDER BY—a
-  sort must be added after the hash join. This is in contrast to merge join,
-  whose output is sorted on the join attribute.
+  requires sorted input---a GroupBy, a merge join, or a user-requested ORDER
+  BY---a sort must be added after the hash join. This is in contrast to merge
+  join, whose output is sorted on the join attribute.
 
   == Output Size Estimation for Joins
 
@@ -348,8 +350,8 @@
 
   == Set Operators
 
-  The set operators—Union, Intersect, and Except—operate on two relations with
-  identical schemas and return their set union, set intersection, or set
+  The set operators---Union, Intersect, and Except---operate on two relations
+  with identical schemas and return their set union, set intersection, or set
   difference respectively, with duplicate elimination. The multiset variant
   UnionAll returns all records from both relations without duplicate
   elimination.
@@ -371,12 +373,12 @@
 
   All three operations therefore reduce to a merge join on all attributes, with
   different emission rules. The sort requirement is the same: both inputs must
-  be sorted on a super-key for the relation—enough attributes to determine all
-  others, typically either the primary key or all attributes—in the same order.
-  Because Union and its variants are symmetric with respect to the schema, the
-  sort order for attributes within the key may be chosen freely (ascending or
-  descending on each attribute, in any permutation) as long as both inputs use
-  the same order.
+  be sorted on a super-key for the relation---enough attributes to determine all
+  others, typically either the primary key or all attributes---in the same
+  order. Because Union and its variants are symmetric with respect to the
+  schema, the sort order for attributes within the key may be chosen freely
+  (ascending or descending on each attribute, in any permutation) as long as
+  both inputs use the same order.
 
   The incremental cost of Union, Intersect, and Except is zero once the inputs
   are sorted; the cost of the sort operators placed on each input follows the
@@ -386,7 +388,7 @@
 
   As a design observation, intersection is exactly a natural join on all
   attributes. Except is a left outer join on all attributes where the right-hand
-  fields are null—which expresses the condition that no matching right record
+  fields are null---which expresses the condition that no matching right record
   was found. Union is a full outer join on all attributes. This connection
   explains why the same algorithms that implement join also implement set
   operators: structurally they are the same computation.
@@ -433,8 +435,8 @@
   over hash join so that the sort required for merge join also satisfies the
   GroupBy grouping requirement.
 
-  More subtly, if two consecutive merge joins use the same join attribute—for
-  example, joining $R$, $S$, and $T$ all on attribute $A$—the output of the
+  More subtly, if two consecutive merge joins use the same join attribute---for
+  example, joining $R$, $S$, and $T$ all on attribute $A$---the output of the
   first merge join is already sorted on $A$ and can be fed directly into the
   second merge join without re-sorting. A chain of merge joins on the same
   attribute has the same total cost as a single sort of the largest input. A

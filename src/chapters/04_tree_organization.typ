@@ -7,7 +7,7 @@
   search performance so catastrophic that it requires secondary indexes for any
   selective access. The sequential organization delivers logarithmic search and
   clustered range scans, but its insertion cost, in its pure form, is linear in
-  the file size—a penalty so severe that it can only be mitigated through
+  the file size---a penalty so severe that it can only be mitigated through
   deliberate underpopulation of pages or periodic, system-stopping
   reorganizations. The question that naturally arises is whether a structure
   exists that transcends this dichotomy: a dynamic organization that maintains
@@ -26,8 +26,8 @@
 
   The study of database systems reveals a fundamental truth about data
   organization on disk: _no single approach dominates all scenarios_. Instead,
-  four primary organizational strategies—heap organizations, sequential files,
-  hash-based structures, and tree-based structures—each occupy distinct niches
+  four primary organizational strategies---heap organizations, sequential files,
+  hash-based structures, and tree-based structures---each occupy distinct niches
   characterized by their particular strengths and limitations. This chapter
   examines the fourth of these approaches, with particular attention to B-trees
   and their most practically significant variant, the B+-tree, while situating
@@ -48,7 +48,7 @@
   form a hierarchy_ from worst to best. Rather, each method possesses situations
   in which it excels and situations in which it performs poorly. The selection
   of an appropriate organization depends critically on the expected workload
-  patterns—the types of queries most frequently executed, the frequency and
+  patterns---the types of queries most frequently executed, the frequency and
   pattern of insertions and deletions, and the relative importance of different
   performance metrics such as search time, update cost, and storage efficiency.
 
@@ -95,27 +95,27 @@
   two children. More precisely, every node except the root contains at least
   $ceil(m/2)-1$ keys and at most $m-1$ keys.
 
-  The concept of fan-out—the number of children per node—determines the tree's
-  height and, consequently, its search performance. The number of pointers per
-  node is bounded by $m$, and in practice, $m$ is chosen to match the page size
-  of the storage system. With a fan-out of, say, 100, the tree's capacity grows
-  exponentially with each level. A single node at the root level holds at most
-  99 records. Adding one level of intermediate nodes yields up to $100 times 99$
-  records at the second level, assuming each intermediate node has the maximum
-  number of children. Adding a third level produces $100^2 times 99$ records,
-  and so forth. This exponential growth means that even with modest fan-outs,
-  B-trees become extremely shallow. The height $h$ of a B-tree is approximately
-  logarithmic in the number of records, specifically $log_(m/2) N$ in the
-  pessimistic case (when nodes are half full) or $log_m N$ in the optimistic
-  case (when nodes are full).
+  The concept of fan-out---the number of children per node---determines the
+  tree's height and, consequently, its search performance. The number of
+  pointers per node is bounded by $m$, and in practice, $m$ is chosen to match
+  the page size of the storage system. With a fan-out of, say, 100, the tree's
+  capacity grows exponentially with each level. A single node at the root level
+  holds at most 99 records. Adding one level of intermediate nodes yields up to
+  $100 times 99$ records at the second level, assuming each intermediate node
+  has the maximum number of children. Adding a third level produces
+  $100^2 times 99$ records, and so forth. This exponential growth means that
+  even with modest fan-outs, B-trees become extremely shallow. The height $h$ of
+  a B-tree is approximately logarithmic in the number of records, specifically
+  $log_(m/2) N$ in the pessimistic case (when nodes are half full) or $log_m N$
+  in the optimistic case (when nodes are full).
 
   This logarithmic height directly translates into search efficiency. To locate
   a specific record, the search algorithm traverses from root to leaf, reading
   exactly one node per level. With a fan-out of 100, a tree containing one
   million records would have only three levels: a root node, one level of
   intermediate nodes, and the leaf level. In such a configuration, the vast
-  majority of records—99% in this example—reside in the leaves. The cost of a
-  typical equality search is therefore approximately $h$ disk accesses, where
+  majority of records---99% in this example---reside in the leaves. The cost of
+  a typical equality search is therefore approximately $h$ disk accesses, where
   $h$ is the height of the tree.
 
   #figure(image("../figures/chapter4/btree_1.pdf"), caption: [
@@ -135,8 +135,8 @@
   _new_ record, the search procedure always terminates at a leaf node; there is
   no ambiguity about where the record belongs, as the sorted order uniquely
   determines its position. If the target leaf has available space, the record is
-  inserted there with minimal overhead—essentially the cost of reading the leaf
-  and writing it back.
+  inserted there with minimal overhead---essentially the cost of reading the
+  leaf and writing it back.
 
   However, when the target leaf is already full, a _split_ operation occurs.
   Consider a leaf containing keys 3, 5, and 7, into which a new record with key
@@ -191,7 +191,7 @@
 
     $ P approx (1/50)^2 = 0.0004 $
 
-    So fewer than 1 in 2000 insertions would cause the tree to grow—and this
+    So fewer than 1 in 2000 insertions would cause the tree to grow---and this
     probability shrinks exponentially as the tree gets taller.
   ])
 
@@ -226,11 +226,11 @@
   ])
 
   The key insight is that B-trees are _self-organizing_. Extensive sequences of
-  insertions and deletions can be performed—causing the file to grow and shrink
-  repeatedly—without ever requiring a full reorganization of the structure. This
-  stands in stark contrast to static hash tables or static sequential files,
-  which require periodic reorganization to maintain acceptable performance as
-  the data evolves.
+  insertions and deletions can be performed---causing the file to grow and
+  shrink repeatedly---without ever requiring a full reorganization of the
+  structure. This stands in stark contrast to static hash tables or static
+  sequential files, which require periodic reorganization to maintain acceptable
+  performance as the data evolves.
 
   #figure(image("../figures/chapter4/btree_5.pdf"), caption: [
     Deletion of key 3 (underlined) from a leaf causing a rotation: the leaf
@@ -246,16 +246,16 @@
   The B+-tree represents a variation of the basic B-tree that has become the
   most commonly used implementation in practice. The fundamental change is that
   _all actual data records reside exclusively in the leaf nodes_. Internal nodes
-  contain only keys and pointers—not full records. This separation has profound
-  implications for both performance and storage efficiency.
+  contain only keys and pointers---not full records. This separation has
+  profound implications for both performance and storage efficiency.
 
   A useful way to conceptualize the B+-tree is as two distinct components. The
   leaf level forms a _dynamic sequential file_: a sorted collection of data
   pages linked together through pointers, enabling efficient sequential scans.
-  The upper portion—all internal nodes—constitutes a _sparse index_ over these
-  leaf pages. Each internal node entry contains a key and a pointer to a child
-  node, with the implicit understanding that all records in the child's subtree
-  have keys less than or equal to that key.
+  The upper portion---all internal nodes---constitutes a _sparse index_ over
+  these leaf pages. Each internal node entry contains a key and a pointer to a
+  child node, with the implicit understanding that all records in the child's
+  subtree have keys less than or equal to that key.
 
   The advantages of this design are substantial. Because internal nodes contain
   only keys and pointers, rather than full records with multiple attributes and
@@ -316,11 +316,11 @@
   ]
 
   It is important to note that this efficiency applies only when the B+-tree is
-  used as the _primary_ organization—that is, when the data itself is physically
-  sorted on the indexed attribute. In this case, even a range predicate
-  selecting 50% of the records costs just 50% of the leaf pages. This is a much
-  stronger guarantee than what secondary indexes can offer, as discussed in the
-  following section.
+  used as the _primary_ organization---that is, when the data itself is
+  physically sorted on the indexed attribute. In this case, even a range
+  predicate selecting 50% of the records costs just 50% of the leaf pages. This
+  is a much stronger guarantee than what secondary indexes can offer, as
+  discussed in the following section.
 
   === Storage Efficiency and the Page Occupancy Trade-off
 
@@ -339,7 +339,7 @@
   also full does a true split occur, at which point three pages are produced
   from the two full ones, each at approximately 66% occupancy. With this policy,
   no page ever drops below 66%, giving an average of
-  $(66\% + 100\%) / 2 approx 83\%$—substantially better than 75%, though still
+  $(66\% + 100\%) / 2 approx 83\%$---substantially better than 75%, though still
   below the density of a static file.
 
   #warning-box()[
@@ -356,15 +356,15 @@
   compact heap file would require for the same data. This is the price paid for
   fast equality and range access on the primary attribute. When table scans on
   arbitrary attributes are frequent and important, a heap organization may be
-  preferable—augmented by secondary indexes for the attributes that require fast
-  lookup.
+  preferable---augmented by secondary indexes for the attributes that require
+  fast lookup.
 
   == Broader Implications and Conceptual Lessons
 
   The study of B-trees and B+-trees reveals several fundamental principles that
   inform database design more broadly. First, no organizational structure
-  dominates all scenarios. Each approach—heap, sequential, hash, and
-  tree-based—possesses distinctive strengths and weaknesses that make it
+  dominates all scenarios. Each approach---heap, sequential, hash, and
+  tree-based---possesses distinctive strengths and weaknesses that make it
   suitable for particular workloads. The designer's task is to match the
   structure to the expected access patterns.
 

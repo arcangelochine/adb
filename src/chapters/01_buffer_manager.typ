@@ -63,14 +63,14 @@
   a logarithmic sense midway between traditional RAM and magnetic disks.
   Notably, they are still persistent storage. Despite this fundamentally
   different physical nature, for technical reasons outside our immediate
-  scope—having to do with wear-leveling algorithms that map virtual to physical
-  addresses to prevent memory cells from burning out—flash memory is also
-  architected to be read and written one page at a time. This convergence on a
-  page-based software interface, whether for a spinning disk or a solid-state
-  drive, allows the higher levels of the DBMS to manage them with a unified
-  abstraction. In modern data centers, a storage hierarchy often includes a mix
-  of SSDs for more frequently accessed "hot" data and larger pools of
-  traditional HDDs for less-used "cold" data. For the remainder of this
+  scope---having to do with wear-leveling algorithms that map virtual to
+  physical addresses to prevent memory cells from burning out---flash memory is
+  also architected to be read and written one page at a time. This convergence
+  on a page-based software interface, whether for a spinning disk or a
+  solid-state drive, allows the higher levels of the DBMS to manage them with a
+  unified abstraction. In modern data centers, a storage hierarchy often
+  includes a mix of SSDs for more frequently accessed "hot" data and larger
+  pools of traditional HDDs for less-used "cold" data. For the remainder of this
   discussion, any reference to a "disk" should be understood as a convenient
   shorthand for this generic, page-based, persistent storage layer.
 
@@ -88,7 +88,7 @@
   with a "_get and pin_" request. If the requested page is already present in a
   buffer frame, the manager simply increments a counter associated with that
   frame and returns its memory address. If not, it must find a suitable
-  frame—perhaps by reclaiming one that is no longer in active use—read the
+  frame---perhaps by reclaiming one that is no longer in active use---read the
   requested page from disk into that frame, record the new mapping, and then
   return the address.
 

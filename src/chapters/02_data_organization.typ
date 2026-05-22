@@ -4,8 +4,8 @@
   The central challenge of any database management system is not merely the
   execution of queries, but the _efficient and persistent storage_ of the data
   upon which those queries operate. The question of how a table is stored on
-  disk—how individual records are laid out within pages, and how those pages are
-  assembled into a file—is not a low-level implementation detail. It is a
+  disk---how individual records are laid out within pages, and how those pages
+  are assembled into a file---is not a low-level implementation detail. It is a
   strategic architectural decision that fundamentally determines the performance
   profile of every operation the system will perform. A shift in storage
   organization does not alter the logical result of a query, but it can
@@ -50,7 +50,7 @@
 
   This brings forth a concept of significant architectural importance: the
   _Record Identifier_ (_RID_) , and the requirement of its immutability. Every
-  record within a database is uniquely addressed by a composite identifier—a
+  record within a database is uniquely addressed by a composite identifier---a
   pair consisting of a page identifier (_PID_) and a slot position within that
   page. The integrity of the entire indexing ecosystem depends on these
   identifiers remaining stable. Secondary indexes, which will be discussed in
@@ -61,8 +61,8 @@
 
   The solution is an indirection layer inside the page. The RID does not point
   directly to the record's raw data bytes. Instead, it points to an entry in a
-  _slot array_ stored at a fixed position in the page—typically at the header or
-  footer. This array entry contains the actual current offset within the page
+  _slot array_ stored at a fixed position in the page---typically at the header
+  or footer. This array entry contains the actual current offset within the page
   where the record's data is currently located. When an update causes a record
   to grow beyond its original allocated space, the storage manager relocates the
   record to a different position within the same page where sufficient
@@ -82,11 +82,11 @@
   consecutive sectors on the storage medium, making sequential access trivially
   efficient. However, this model is rendered impossible by the requirements of
   _dynamic growth_. When a file is first created empty, it would be
-  fundamentally wasteful—and in practical systems, administratively untenable—to
-  pre-allocate a vast contiguous extent of disk space for a file whose eventual
-  size is unknown and likely to evolve over months or years of operation. No
-  modern operating system or database system represents dynamic files as
-  physically contiguous sequences.
+  fundamentally wasteful---and in practical systems, administratively
+  untenable---to pre-allocate a vast contiguous extent of disk space for a file
+  whose eventual size is unknown and likely to evolve over months or years of
+  operation. No modern operating system or database system represents dynamic
+  files as physically contiguous sequences.
 
   Two practical alternatives exist. The first models the file as a _linked
   list_, where each data page contains a pointer to the subsequent page in the
@@ -107,8 +107,8 @@
   cost of a single read I/O to retrieve the data page itself.
 
   This model introduces an important performance observation. While the
-  directory enables logically sequential access—page 1, then page 2, then page
-  3—the actual physical placement of these pages on the storage medium may be
+  directory enables logically sequential access---page 1, then page 2, then page
+  3---the actual physical placement of these pages on the storage medium may be
   entirely non-sequential. Logical consecutiveness does not imply physical
   consecutiveness. On traditional rotating magnetic disks, this disparity
   carried a severe performance penalty due to _mechanical seek_ and _rotational
@@ -116,8 +116,8 @@
   less significant, as access to any physical block incurs no mechanical delay.
   The principle, however, endures at the level of data transfer efficiency:
   unnecessary pages should not be read if they do not contain useful data. With
-  these abstractions in place—variable-length records with stable identifiers,
-  files as dynamic page collections with directory-based addressing—attention
+  these abstractions in place---variable-length records with stable identifiers,
+  files as dynamic page collections with directory-based addressing---attention
   can now turn to the primary organizational strategies themselves.
 
   == Primary and Secondary organizations
@@ -134,8 +134,8 @@
 
   A database table possesses exactly one primary organization. This is the
   fundamental decision about where to physically place each new record as it
-  arrives. When an insert command is executed, the primary organization—and
-  nothing else—determines the page into which the record will be written. The
+  arrives. When an insert command is executed, the primary organization---and
+  nothing else---determines the page into which the record will be written. The
   choice is singular; one cannot maintain a table simultaneously sorted by
   family name and appended in arrival order. The primary organization might
   dictate placement at the end of the file, in the middle according to a sort
@@ -145,19 +145,19 @@
   After the primary organization has been decided, zero, one, or many _secondary
   organizations_ may be added. These are auxiliary data structures, most
   commonly indexes, whose sole function is to accelerate specific search and
-  access patterns. A table stored with a heap primary organization—where records
-  are appended in arrival order—can be augmented with a secondary B-tree index
-  on a surname column. This index provides a fast, logarithmic-time path to
-  locate records by surname, compensating for the heap's inherent weakness in
-  selective searching. The distinction is of significant strategic importance:
-  the primary organization determines properties such as insertion cost and
-  table scan efficiency that cannot be mitigated after the fact by secondary
-  structures. The secondary indexes are additive and optional. One can add them,
-  drop them, or change them in response to evolving query patterns. The primary
-  organization, once the table is populated, is extraordinarily expensive to
-  change, as it requires rewriting every record according to a new layout
-  policy. It is for this reason that the choice of primary organization is given
-  such careful attention.
+  access patterns. A table stored with a heap primary organization---where
+  records are appended in arrival order---can be augmented with a secondary
+  B-tree index on a surname column. This index provides a fast, logarithmic-time
+  path to locate records by surname, compensating for the heap's inherent
+  weakness in selective searching. The distinction is of significant strategic
+  importance: the primary organization determines properties such as insertion
+  cost and table scan efficiency that cannot be mitigated after the fact by
+  secondary structures. The secondary indexes are additive and optional. One can
+  add them, drop them, or change them in response to evolving query patterns.
+  The primary organization, once the table is populated, is extraordinarily
+  expensive to change, as it requires rewriting every record according to a new
+  layout policy. It is for this reason that the choice of primary organization
+  is given such careful attention.
 
   A foundational insight that frames this entire discussion is that every
   organization different from the heap begins with a decision about which
@@ -184,11 +184,11 @@
 
   The simplest and most immediately intuitive primary organization is the
   so-called _heap_. The term carries different meanings across computer science
-  domains—heaps in algorithm courses refer to specific in-memory tree-based
-  structures—but within the context of storage organizations, it denotes a file
-  where records are stored one after the other, strictly in the order they are
-  inserted. The file begins empty, and every new record is simply appended to
-  the last page.
+  domains---heaps in algorithm courses refer to specific in-memory tree-based
+  structures---but within the context of storage organizations, it denotes a
+  file where records are stored one after the other, strictly in the order they
+  are inserted. The file begins empty, and every new record is simply appended
+  to the last page.
 
   === Space Efficiency and the Table Scan
 
@@ -241,8 +241,8 @@
 
   The write I/O component is similarly subject to amortization. Consider a page
   that can contain, on average, one hundred records. When the first record is
-  inserted into a newly allocated last page, the page becomes dirty—modified in
-  memory but not yet written to disk. The buffer manager, following standard
+  inserted into a newly allocated last page, the page becomes dirty---modified
+  in memory but not yet written to disk. The buffer manager, following standard
   write-back policies, will not force this page to disk immediately. It will
   remain in the buffer, accumulating further inserts. Records two through one
   hundred are added to this same in-memory page, each insertion requiring no
@@ -250,12 +250,12 @@
   necessitating the allocation of a new last page, does the buffer manager flush
   the now-full previous page to disk. The result is a single write I/O
   distributed across one hundred insertions. The amortized insertion cost is
-  therefore approximately one divided by the page capacity in records—a value
+  therefore approximately one divided by the page capacity in records---a value
   often on the order of $1/100$ of a single I/O.
 
   This property makes the heap organization the structure of choice for any
   workload where _insertion dominates_. The most illustrative example is the
-  journal or event log—a table that records every significant action in the
+  journal or event log---a table that records every significant action in the
   system, written to on every transaction, and read only in exceptional
   circumstances such as failure recovery or security audits. In such an
   environment, the heap's insertion cost, approaching an infinitesimal fraction
@@ -269,8 +269,8 @@
   reading the data, which pages might contain records matching a given
   predicate.
 
-  Consequently, an _equality search_—finding a specific record by a given key
-  value—requires reading, at minimum, every page in the file that happens to
+  Consequently, an _equality search_---finding a specific record by a given key
+  value---requires reading, at minimum, every page in the file that happens to
   contain records. Since the distribution of records across pages is determined
   solely by insertion order, and bears no relationship to any attribute values,
   a record with any given key value could reside on any page with equal
@@ -324,8 +324,8 @@
   higher, in the second half. Each probe halves the remaining search space. The
   resulting cost, in both the average and worst case, is logarithmic in the
   number of pages. A file of one thousand pages yields a worst-case search path
-  of approximately ten page reads—a dramatic improvement over the heap's linear
-  scan of one thousand reads.
+  of approximately ten page reads---a dramatic improvement over the heap's
+  linear scan of one thousand reads.
 
   An even more aggressive technique is _interpolation search_. If the
   distribution of key values is known or can be reasonably approximated, the
@@ -347,8 +347,8 @@
   The significance of this clustering effect is best illustrated with a concrete
   example. Consider a file containing one hundred million records distributed
   across one million pages, yielding an average of one hundred records per page.
-  A range query with a _selectivity factor_ of 5%—meaning it is expected to
-  return five million records—is executed against this table. If the records
+  A range query with a _selectivity factor_ of 5%---meaning it is expected to
+  return five million records---is executed against this table. If the records
   were stored in a heap, these five million records could plausibly be scattered
   across a substantial fraction of the entire file. The system might need to
   read hundreds of thousands, or even all one million, of the pages to retrieve
@@ -382,9 +382,9 @@
   operation, which becomes, in the static sequential file, prohibitively
   expensive. To insert a new record into a sorted file, the system must first
   locate the correct insertion point. It must then make physical space for the
-  new record on the appropriate page. If that page is full—or if the insertion
+  new record on the appropriate page. If that page is full---or if the insertion
   of a single record would disrupt the sorted order of all subsequent
-  records—every page after the insertion point must, in principle, be read and
+  records---every page after the insertion point must, in principle, be read and
   rewritten to shift the data down by one position. The average insertion
   affects approximately half the pages in the file. The _cost is therefore
   linear in the file size_, and for a large file, it is operationally
@@ -436,7 +436,7 @@
   linear scan begins to dominate query costs, a _reorganization_ operation
   becomes mandatory. The system must merge the delta file, the negative delta
   file, and the main sequential file into a new, clean sequential file. This
-  operation reads and writes both files in their entirety—a cost of two times
+  operation reads and writes both files in their entirety---a cost of two times
   the total number of pages. It is a "static" solution in the formal sense:
   every operation during normal runtime is efficient and bounded, but the system
   periodically incurs a massive, system-stopping reorganization cost. This

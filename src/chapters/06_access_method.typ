@@ -13,11 +13,11 @@
   producing one record at a time. It then examines how an optimizer constructs
   and evaluates candidate access plans, focusing on the two decisions that
   dominate plan quality: join order and the choice between table scan and index
-  access. Both decisions hinge on accurate estimates of selectivity factors—the
-  fraction of records a predicate is expected to select—and the chapter closes
-  with a rigorous treatment of selectivity estimation: the standard formulas,
-  their systematic failures, and the histogram-based techniques that modern
-  systems use to correct those failures.
+  access. Both decisions hinge on accurate estimates of selectivity
+  factors---the fraction of records a predicate is expected to select---and the
+  chapter closes with a rigorous treatment of selectivity estimation: the
+  standard formulas, their systematic failures, and the histogram-based
+  techniques that modern systems use to correct those failures.
 ]
 
 #chapter(title: "Access Methods", abstract: abs, toc: true)[
@@ -47,7 +47,7 @@
 
   The fourth and final transformation produces the _physical plan_, in which
   every logical operator is replaced by a physical one. A logical join becomes
-  one of several concrete join algorithms—nested loop, index nested loop,
+  one of several concrete join algorithms---nested loop, index nested loop,
   sort-merge, or hash join. A logical selection becomes either a table scan
   followed by an in-memory filter, or a direct index lookup. The component
   responsible for this fourth transformation is the _Optimizer_, and it is
@@ -74,7 +74,7 @@
   `close`, which releases all resources. When the root of the plan tree is asked
   for its next record, it asks its children for their next records, each of
   which asks its own children, and so on down to the leaf operators. The leaf
-  operators—table scans and index scans—are the only operators that actually
+  operators---table scans and index scans---are the only operators that actually
   read from disk. Every other operator receives records from its children one at
   a time, applies its logic, and immediately passes the result upward.
 
@@ -85,16 +85,16 @@
   one record. A nested-loop join holds one record from its outer input and one
   from its inner input simultaneously. The total memory consumed by all non-leaf
   operators in the tree is bounded by the number of operators multiplied by the
-  size of one record—a quantity that is negligible compared to the size of the
+  size of one record---a quantity that is negligible compared to the size of the
   data.
 
   There are exceptions. Sorting requires seeing all records before producing any
-  output. Hashing-based operations—hash join and hash-based grouping—must build
-  an in-memory hash table before the probe phase can begin. These operators do
-  access disk for intermediate storage, and they are the reason why memory
-  allocation matters for query performance even in the iterator model. But they
-  are the exception, not the rule, and the iterator model confines their disk
-  footprint to what is strictly necessary.
+  output. Hashing-based operations---hash join and hash-based grouping---must
+  build an in-memory hash table before the probe phase can begin. These
+  operators do access disk for intermediate storage, and they are the reason why
+  memory allocation matters for query performance even in the iterator model.
+  But they are the exception, not the rule, and the iterator model confines
+  their disk footprint to what is strictly necessary.
 
   The cost of the iterator model is implementation complexity. Each operator
   must maintain its own state across successive calls to next, remembering where
@@ -111,7 +111,7 @@
   The iterator model depends on a uniform interface through which physical
   operators request records from their inputs, regardless of the underlying data
   structure. This interface is provided by the _Access Method Layer_, which
-  wraps every data structure—heap file, B+-tree index, hash table—behind a
+  wraps every data structure---heap file, B+-tree index, hash table---behind a
   common cursor abstraction.
 
   A _file scan cursor_ on a heap file supports `open`, which positions the
@@ -153,7 +153,7 @@
   method selection_. Join order determines the size of intermediate results. If
   a query joins students, exams, and courses with a highly selective condition
   on the course title, the right plan begins by selecting the matching
-  courses—perhaps just one row—and then joins that tiny intermediate result
+  courses---perhaps just one row---and then joins that tiny intermediate result
   against exams and then students. Beginning instead from students, which may
   number in the thousands, produces a large intermediate result that propagates
   expensively through the rest of the tree. The general principle is to begin
@@ -165,13 +165,13 @@
   in the query, the optimizer decides whether to use a table scan or one of the
   available indexes, and if an index, which one. This decision depends on the
   selectivity factor of the predicate applied to that table: when the
-  selectivity factor is very low—below roughly 0.1%—an index access is faster
-  than a table scan; when it is high—above roughly 1%—the table scan is faster.
-  At intermediate selectivities the choice is less clear and the cost model must
-  be consulted directly.
+  selectivity factor is very low---below roughly 0.1%---an index access is
+  faster than a table scan; when it is high---above roughly 1%---the table scan
+  is faster. At intermediate selectivities the choice is less clear and the cost
+  model must be consulted directly.
 
   The asymmetry of error deserves emphasis. An optimizer that overestimates
-  selectivity—believing a predicate is more selective than it is—will prefer
+  selectivity---believing a predicate is more selective than it is---will prefer
   index access where a table scan would have been better. In the worst case, an
   unclustered index access on a non-selective predicate costs $O(N_"REC")$ page
   accesses, which is far worse than the $O(N_"PAG")$ cost of a table scan. An
@@ -225,8 +225,8 @@
 
   This formula is motivated by the case where one attribute is a foreign key and
   the other is the corresponding primary key. If $A$ takes values from a set
-  that is a subset of the values taken by $B$—as is guaranteed by referential
-  integrity—then for any value extracted from $A$, the probability that a
+  that is a subset of the values taken by $B$---as is guaranteed by referential
+  integrity---then for any value extracted from $A$, the probability that a
   randomly chosen value of $B$ matches it is $1 / (N_"KEY" (B))$. Taking the
   maximum in the denominator handles the general case where it is not known
   which attribute is the subset. The formula gives a result that is either
@@ -264,30 +264,30 @@
   in the tails of the distribution selects far fewer records than the formula
   predicts, because the formula overestimates the density in the tails. The
   formula gives a reasonable estimate only for a query whose range is positioned
-  such that the actual density happens to equal the average density—a rare
+  such that the actual density happens to equal the average density---a rare
   coincidence in practice.
 
   === Sensitivity to Outliers
 
   The range formula has an additional and especially damaging failure mode:
   sensitivity to outliers. The formula depends on $max(A) - min(A)$, the total
-  range of the attribute. A single data entry error—one salary recorded as
+  range of the attribute. A single data entry error---one salary recorded as
   10,000,000 instead of 10,000, one temperature recorded in Kelvin instead of
-  Celsius—inflates the denominator by orders of magnitude. Every range query on
-  that attribute then receives a selectivity estimate that is orders of
+  Celsius---inflates the denominator by orders of magnitude. Every range query
+  on that attribute then receives a selectivity estimate that is orders of
   magnitude smaller than reality, causing the optimizer to believe all range
   predicates are extremely selective. The consequence is systematic overuse of
   index access, and an unclustered index access on a non-selective predicate can
-  cost $N_"REC"$ page reads—potentially a thousand times more than a table scan.
-  Worse, the error is invisible from the query itself: the optimizer is applying
-  the correct formula to corrupted statistics, and the resulting plan appears
-  reasonable until execution reveals its cost.
+  cost $N_"REC"$ page reads---potentially a thousand times more than a table
+  scan. Worse, the error is invisible from the query itself: the optimizer is
+  applying the correct formula to corrupted statistics, and the resulting plan
+  appears reasonable until execution reveals its cost.
 
   === Correlation Between Attributes
 
   The conjunction formula
   $s_f (phi_1 and phi_2) = s_f (phi_1) times s_f (phi_2)$ assumes that the two
-  predicates are statistically independent—that knowing a record satisfies
+  predicates are statistically independent---that knowing a record satisfies
   $phi_1$ gives no information about whether it satisfies $phi_2$. This
   assumption fails whenever the two attributes are correlated, which in practice
   is more often the rule than the exception.
@@ -298,7 +298,7 @@
   has ever taken the databases course, the true selectivity of the conjunction
   is zero. But if databases exams account for 10% of all exams and anthropology
   students account for 10% of all students, the formula estimates the
-  conjunction at 1%—infinitely larger than the truth. The optimizer, believing
+  conjunction at 1%---infinitely larger than the truth. The optimizer, believing
   1% of records qualify, may choose a table scan; an optimizer that knew the
   true selectivity was zero would produce a trivially fast plan.
 
@@ -315,7 +315,7 @@
 
   No formula based only on per-attribute statistics can detect inter-attribute
   correlation. The correlation is an inherently multivariate property of the
-  data, and capturing it requires multivariate statistics—which, as discussed
+  data, and capturing it requires multivariate statistics---which, as discussed
   below, are expensive to maintain.
 
   == Histograms
@@ -332,9 +332,9 @@
   $v_1 <= A <= v_2$ is answered by summing the record counts of all buckets
   fully inside the range, plus a proportional fraction of the counts of the two
   boundary buckets whose edges partially overlap the range. The estimate is
-  exact when every bucket is internally uniform—when all values within a bucket
-  occur with equal frequency—and the approximation error is smaller when more
-  buckets are used.
+  exact when every bucket is internally uniform---when all values within a
+  bucket occur with equal frequency---and the approximation error is smaller
+  when more buckets are used.
 
   #figure(image("../figures/chapter6/histograms.pdf"), caption: [
     Comparison of equi-width and equi-height histograms. The equi-width
@@ -359,20 +359,20 @@
   approximately the same number of records. If the table has 100,000 records and
   100 buckets are allocated, each bucket contains approximately 1,000 records.
   In a right-skewed salary distribution, the buckets near the median are
-  narrow—covering a small salary range that contains many records—while the
-  buckets in the high-salary tail are wide—covering a large range that contains
-  few records. This allocation matches representational resolution to data
-  density: the parts of the domain where most queries fall are represented most
-  precisely.
+  narrow---covering a small salary range that contains many records---while the
+  buckets in the high-salary tail are wide---covering a large range that
+  contains few records. This allocation matches representational resolution to
+  data density: the parts of the domain where most queries fall are represented
+  most precisely.
 
   For an equi-width histogram, the stored information is the height of each
-  bucket—the record count—because the boundaries are implicit. For an
+  bucket---the record count---because the boundaries are implicit. For an
   equi-height histogram, the stored information is the boundary of each
-  bucket—where each bucket begins and ends—because the heights are approximately
-  equal and known. In either case the total storage is proportional to the
-  number of buckets, which can be chosen to fit in a single page of main memory,
-  ensuring that the histogram is available to the optimizer without any disk
-  access.
+  bucket---where each bucket begins and ends---because the heights are
+  approximately equal and known. In either case the total storage is
+  proportional to the number of buckets, which can be chosen to fit in a single
+  page of main memory, ensuring that the histogram is available to the optimizer
+  without any disk access.
 
   === Maintenance and Practical Considerations
 
@@ -380,8 +380,8 @@
   after every single insertion or deletion would be prohibitively expensive:
   counting distinct values requires either an index scan or a full table scan,
   neither of which should occur on every write. The standard practice is to
-  update histograms periodically—typically at scheduled maintenance windows when
-  the system load is low—or to expose an explicit command such as
+  update histograms periodically---typically at scheduled maintenance windows
+  when the system load is low---or to expose an explicit command such as
   `UPDATE STATISTICS` that the database administrator can invoke after bulk
   loads or other operations that significantly change the data distribution.
 
@@ -407,11 +407,11 @@
   each with 100 distinct values, a joint histogram with 100 buckets per
   dimension requires storing 10,000 values. For ten attributes, maintaining a
   joint histogram for every pair requires $binom(10, 2) = 45$ joint histograms,
-  each with 10,000 entries—a total of 450,000 values, which begins to strain the
-  requirement that statistics fit in main memory and be inexpensive to maintain.
-  For triples of attributes the situation is worse still, and in general
-  capturing $k$-way correlations requires a $k$-dimensional histogram whose size
-  grows exponentially in $k$.
+  each with 10,000 entries---a total of 450,000 values, which begins to strain
+  the requirement that statistics fit in main memory and be inexpensive to
+  maintain. For triples of attributes the situation is worse still, and in
+  general capturing $k$-way correlations requires a $k$-dimensional histogram
+  whose size grows exponentially in $k$.
 
   In practice, no production system maintains joint histograms for arbitrary
   attribute pairs. The standard approach remains independent per-attribute
