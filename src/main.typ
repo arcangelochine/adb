@@ -33,3 +33,4 @@
 #include "chapters/05_index.typ"
 #include "chapters/06_access_method.typ"
 #include "chapters/07_physical_operators.typ"
+#include "chapters/08_join.typ"

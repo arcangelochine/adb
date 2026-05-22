@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" pages="5">
+<mxfile host="app.diagrams.net" pages="6">
   <diagram id="FxJMza0u3TPQ9gMH4ev7" name="Chapter 3">
     <mxGraphModel dx="751" dy="747" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="none" math="0" shadow="0">
       <root>
@@ -2516,6 +2516,93 @@
         </mxCell>
         <mxCell id="3o4rAMt9Mfb6k9M6BgYr-107" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Grouped" vertex="1">
           <mxGeometry height="40" width="460" x="560" y="360" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="xANEUKpWfArMtMo-OHa8" name="Chapter 8">
+    <mxGraphModel dx="1060" dy="912" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexNestedLoop(R.r1 = S.s1)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="560" x="120" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-5" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-9" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;TableScan(R)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="120" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-10" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexFilter(S, Idx(S), s.s1 = r.r1)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="320" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexNestedLoop(R.r1 = S.s1)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="560" x="720" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-12" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-19" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-11">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="180" />
+              <mxPoint x="1000" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;TableScan(R)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="720" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-21" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-16" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexFilter(S, Idx(S), s.s1 = r.r1)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="920" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-20" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;Filter(&lt;/font&gt;&lt;span id=&quot;mwDw&quot; style=&quot;color: rgb(32, 33, 34); font-size: 16px; text-align: start; background-color: rgb(255, 255, 255);&quot;&gt;&lt;font face=&quot;Courier New&quot;&gt;φ&lt;/font&gt;&lt;/span&gt;&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;)&lt;/font&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="920" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-30" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexNestedLoop(R.a = S.a)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="560" x="120" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-26" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;TableScan(R)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="160" x="120" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-27" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-25" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexFilter(S, IdxS.a, S.a = R.a)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="320" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-28" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexNestedLoop(S.b = T.b)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="960" x="120" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-31" edge="1" parent="1" source="3GCnG_bQfInNMpFbWgGa-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;" target="3GCnG_bQfInNMpFbWgGa-28">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="620" />
+              <mxPoint x="600" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3GCnG_bQfInNMpFbWgGa-29" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font face=&quot;Courier New&quot; style=&quot;font-size: 16px;&quot;&gt;&lt;b&gt;IndexFilter(T, IdxT.b, T.b = S.b)&lt;/b&gt;&lt;/font&gt;" vertex="1">
+          <mxGeometry height="40" width="360" x="720" y="640" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
